@@ -1,0 +1,149 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+	
+#define ROW 17
+#define COL 17
+	
+#define EMPTY 0
+#define RED 1
+#define GREEN 2
+	
+#define BLANKBOX 0
+#define REDBOX 1
+#define GREENBOX 2
+#define GAMEBOX 3
+	
+// This struct define each box on the game board
+struct Box{
+	int state; //state can be either 0 = empty, 1 = red or 2 = green 
+	int type; //type can be either 0 = blankBox, 1 = redBox, 2 = greenBox or 3 = gameBox
+};
+
+// Global Variables
+// Game Board that will hold all the Box values
+struct Box GameBoard [ROW][COL]; //(0,0) at the down left corner
+						//(34,18) at the top right corner
+struct Box NextMoves [12]; //max number of possible next moves is 6
+
+void initializeGameGoard();
+void drawGameBoard();
+void highlightNextMove(struct Box b);
+void placeNextMove(struct Box B);
+bool gameEnd();
+	
+int main(void)
+{
+	
+}
+
+struct Box initBox(int s, int t){
+	struct Box b;
+	b.state = s;
+	b.type = t;
+	return b;
+}
+
+void initializeGameBoard(){
+	//iterate through every box on the gameboard
+	for(int r = 0; r<ROW; r++){
+		for(int c = 0; c<COL; c++){
+			
+			bool isBlankBox = true;
+			
+					//if row is even number
+					if(r%2==0){ 
+						//compute range of col covered in this row
+						int halfLength = 0;
+						if(r>( (ROW-1)/2) ) ){
+							halfLength = ((ROW-1)-r)/2;
+						}else{
+							halfLength = (r)/2;
+						}
+
+						if( (c>= ((ROW-1)/2) - halfLength*2)) )
+						   &&(c<= ((ROW-1)/2) + halfLength*2)) ) ){
+						   if(( (ROW-1)/2 -c)%2 == 0){
+							   if(c <= 3){
+								   GameBoard[r][c] = initBox(RED, REDBOX);
+								   isBlankBox == false;
+							   }
+							   else if(c >= 13){
+								   GameBoard[r][c] = initBox(GREEN, GREENBOX);
+								   isBlankBox == false;
+							   }
+							   else{
+								   GameBoard[r][c] = initBox(EMPTY, GAMEBOX);
+								   isBlankBox == false;
+							   }
+						   }
+						}
+					}
+					//if row is odd number
+					else{    
+					    //compute range of col covered in this row
+						int halfLength = 0;
+						if(r>( (ROW-1)/2) ) ){
+							halfLength = ((ROW-1)-r+1)/2;
+						}else{
+							halfLength = (r+1)/2;
+						}
+
+						if( (c>= ((ROW-1)/2)-1 - (halfLength-1)*2)) )
+						   &&(c<= ((ROW-1)/2)+1 + (halfLength-1)*2)) ) ){
+						   if(( (ROW-1)/2 -1-c)%2 == 0){
+							   if(c <= 3){
+								   GameBoard[r][c] = initBox(RED, REDBOX);
+								   isBlankBox == false;
+							   }
+							   else if(c >= 13){
+								   GameBoard[r][c] = initBox(GREEN, GREENBOX);
+								   isBlankBox == false;
+							   }
+							   else{
+								   GameBoard[r][c] = initBox(EMPTY, GAMEBOX);
+								   isBlankBox == false;
+							   }
+						   }
+						}
+					}
+
+			}
+			if(isBlankBox){
+				//will only reach here if the box is empty blank box
+		    	GameBoard[r][c] = initBox(EMPTY, BLANKBOX);
+			}
+}
+
+//for testing
+void drawGameBoard(){
+	for(int r = 0; r<ROW; r++){
+		for(int c = 0; c<COL; c++){
+			if(GameBoard[r][c].type == BLANKBOX){
+				cout << "   ";
+			}
+			else if(GameBoard[r][c].type == REDBOX){
+				cout << "R";
+			}
+			else if(GameBoard[r][c].type == GREENBOX){
+				cout << "G";
+			}
+			else{
+				cout << "X";
+			}
+			
+			if(GameBoard[r][c].type == EMPTY){
+				cout << "  ";
+			}
+			else if(GameBoard[r][c].type == RED){
+				cout << "R ";
+			}
+			else if(GameBoard[r][c].type == GREEN){
+				cout << "G ";
+			}
+			
+			cout << endl << endl;
+		}
+	}
+}
